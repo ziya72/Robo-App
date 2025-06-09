@@ -1,22 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:robo/nav-bar/home/home.dart';
+import 'package:robo/nav-bar/membership/members.dart';
+import 'package:robo/nav-bar/teams/teams.dart';
+import 'package:robo/utils/theme/colors.dart';
 
-class BottomNavigationBar extends StatelessWidget {
-  const BottomNavigationBar({super.key});
+class AppBottomNavigationBar extends StatefulWidget {
+  const AppBottomNavigationBar({super.key});
 
   @override
+  State<AppBottomNavigationBar> createState() => _AppBottomNavigationBarState();
+}
+
+class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
+  int currentIndex = 0;
+  final List<Widget> screens = [HomeScreen(), TeamScreen(), MemberScreen()];
+  @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        body: TabBarView(children: [
-        HomeScreen(),
-        Screen2(),
-        Screen3(),
-        ]),
-      )
+    return Scaffold(
+      body: screens[currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: AppColors.background,
+        currentIndex: currentIndex,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.textSecondary,
+        onTap: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Teams'),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Members'),
+        ],
+      ),
     );
   }
 }
+
 //class NavigationMenu extends StatelessWidget {
 //  const NavigationMenu({super.key});
 //
