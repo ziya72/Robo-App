@@ -6,7 +6,7 @@ import '/pages/about_us.dart';
 class Layout extends StatelessWidget {
   final Widget body;
 
-  const Layout({required this.body});
+  const Layout({super.key, required this.body});
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +75,15 @@ class Layout extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 12, top: 8),
               child: Builder(
-                builder: (context) => IconButton(
-                  icon: Icon(Icons.menu, color: Colors.cyanAccent, size: 30),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                ),
+                builder:
+                    (context) => IconButton(
+                      icon: Icon(
+                        Icons.menu,
+                        color: Colors.cyanAccent,
+                        size: 30,
+                      ),
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                    ),
               ),
             ),
           ),

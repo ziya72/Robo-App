@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:robo/components/side_drawer.dart';
 
 class GalleryPage extends StatelessWidget {
+  const GalleryPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Layout(

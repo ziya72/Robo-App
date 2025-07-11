@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:robo/components/side_drawer.dart';
 
 class EventsPage extends StatefulWidget {
+  const EventsPage({super.key});
+
   @override
   _EventsPageState createState() => _EventsPageState();
 }

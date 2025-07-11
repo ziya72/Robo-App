@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:robo/components/side_drawer.dart';
 
 class MembersPage extends StatefulWidget {
+  const MembersPage({super.key});
+
   @override
   _MembersPageState createState() => _MembersPageState();
 }

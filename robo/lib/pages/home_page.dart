@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 40),
+            SizedBox(height: 5),
             Center(
               child: Column(
                 children: [
@@ -22,19 +22,38 @@ class HomePage extends StatelessWidget {
                     'Welcome to',
                     style: TextStyle(
                       fontFamily: 'VT323',
-                      fontSize: 28,
+                      fontSize: 38,
                       color: Colors.white,
                     ),
                   ),
                   SizedBox(height: 8),
-                  Text(
-                    'AMU ROBOCLUB',
-                    style: TextStyle(
-                      fontFamily: 'PressStart2P',
-                      fontSize: 28,
-                      color: Colors.cyanAccent,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'AMU',
+                          style: TextStyle(
+                            fontFamily: 'PressStart2P',
+                            fontSize: 28,
+                            color: Colors.cyanAccent,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          'ROBOCLUB',
+                          style: TextStyle(
+                            fontFamily: 'PressStart2P',
+                            fontSize: 28,
+                            color: Colors.cyanAccent,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ],
               ),

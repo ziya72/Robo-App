@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:robo/components/side_drawer.dart';
 
 class ComponentsPage extends StatefulWidget {
+  const ComponentsPage({super.key});
+
   @override
   _ComponentsPageState createState() => _ComponentsPageState();
 }
@@ -101,6 +103,7 @@ class ComponentCard extends StatelessWidget {
   final String issued;
 
   const ComponentCard({
+    super.key,
     required this.name,
     required this.year,
     required this.branch,
