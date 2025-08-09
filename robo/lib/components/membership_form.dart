@@ -1,4 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class RegistrationForm extends StatefulWidget {
   const RegistrationForm({super.key});
@@ -10,19 +14,213 @@ class RegistrationForm extends StatefulWidget {
 class _RegistrationFormState extends State<RegistrationForm> {
   final _formKey = GlobalKey<FormState>();
 
-  String? selectedCourse;
-  String? selectedYear;
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final courseController = TextEditingController();
+  final enrollmentNumberController = TextEditingController();
+  final facultyNumberController = TextEditingController();
+  final mobileController = TextEditingController();
 
-  final courses = ['B.Tech', 'M.Tech'];
-  final years = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
+  File? _idProofImage;
+  File? _paymentProofImage;
+
+  Future<void> _pickIDProofImage() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _idProofImage = File(picked.path);
+      });
+    }
+  }
+
+  Future<void> _pickPaymentProofImage() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _paymentProofImage = File(picked.path);
+      });
+    }
+  }
+
+  Future<void> _submitForm() async {
+    if (!_formKey.currentState!.validate() ||
+        _idProofImage == null ||
+        _paymentProofImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fill all fields and upload both images.'),
+        ),
+      );
+      return;
+    }
+
+    final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+
+    final idStorageRef = FirebaseStorage.instance.ref().child(
+      'registeredMembers/$timestamp.jpg',
+    );
+    final paymentStorageRef = FirebaseStorage.instance.ref().child(
+      'paymentproof_2025/$timestamp.jpg',
+    );
+
+    final idUploadTask = idStorageRef.putFile(_idProofImage!);
+    final paymentUploadTask = paymentStorageRef.putFile(_paymentProofImage!);
+
+    final idProofUrl = await (await idUploadTask).ref.getDownloadURL();
+    final paymentProofUrl =
+        await (await paymentUploadTask).ref.getDownloadURL();
+    final rawEmail = emailController.text.trim();
+
+    await FirebaseFirestore.instance
+        .collection("members_2025")
+        .doc(rawEmail)
+        .set({
+          "name": nameController.text,
+          "email": rawEmail,
+          "course": courseController.text,
+          "enrollmentNumber": enrollmentNumberController.text,
+          "facultyNumber": facultyNumberController.text,
+          "mobile": mobileController.text,
+          "idProofURL": idProofUrl,
+          "paymentProofURL": paymentProofUrl,
+          "paymentStatus": false,
+        });
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Form submitted successfully!')));
+
+    nameController.clear();
+    emailController.clear();
+    courseController.clear();
+    enrollmentNumberController.clear();
+    facultyNumberController.clear();
+    mobileController.clear();
+
+    setState(() {
+      _idProofImage = null;
+      _paymentProofImage = null;
+    });
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    courseController.dispose();
+    enrollmentNumberController.dispose();
+    facultyNumberController.dispose();
+    mobileController.dispose();
+    super.dispose();
+  }
+
+  Widget buildTextField(
+    String label,
+    TextEditingController controller, {
+    TextInputType keyboardType = TextInputType.text,
+    int? maxLength,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        maxLength: maxLength,
+        validator:
+            (value) => value == null || value.isEmpty ? 'Required' : null,
+        style: TextStyle(
+          color: Colors.white,
+          fontFamily: 'VT323',
+          fontSize: 20,
+        ),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(
+            color: Colors.cyanAccent,
+            fontFamily: 'VT323',
+            fontSize: 18,
+          ),
+          filled: true,
+          fillColor: Color(0xFF1A1A2E),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.cyanAccent),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.cyanAccent),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.cyanAccent, width: 2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildImageUploader(
+    String label,
+    File? imageFile,
+    VoidCallback onPick,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.cyanAccent,
+            fontFamily: 'VT323',
+            fontSize: 18,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Color(0xFF1A1A2E),
+            border: Border.all(color: Colors.cyanAccent),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            children: [
+              imageFile == null
+                  ? Text(
+                    'No image selected.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'VT323',
+                      fontSize: 18,
+                    ),
+                  )
+                  : Image.file(imageFile),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.cyanAccent,
+                  foregroundColor: Colors.black,
+                ),
+                onPressed: onPick,
+                child: Text(
+                  'Select Image',
+                  style: TextStyle(fontFamily: 'VT323'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF1A1A2E),
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Color(0xFF0A0E21),
-        elevation: 0,
+        backgroundColor: Color.fromARGB(255, 0, 0, 0),
         centerTitle: true,
         title: Text(
           'MEMBERSHIP FORM',
@@ -39,120 +237,94 @@ class _RegistrationFormState extends State<RegistrationForm> {
           key: _formKey,
           child: Column(
             children: [
-              buildTextField('Name'),
-              buildTextField('Email', keyboardType: TextInputType.emailAddress),
-              buildTextField('College'),
-              buildDropdown(
-                'Course',
-                courses,
-                (value) => setState(() => selectedCourse = value),
+              buildTextField('Name', nameController),
+              buildTextField(
+                'Email',
+                emailController,
+                keyboardType: TextInputType.emailAddress,
               ),
-              buildDropdown(
-                'Year of Study',
-                years,
-                (value) => setState(() => selectedYear = value),
+              buildTextField('Course', courseController),
+              buildTextField(
+                'Enrollment Number',
+                enrollmentNumberController,
+                maxLength: 6,
               ),
-              buildTextField('Enrollment Number', maxLength: 6),
-              buildTextField('Faculty Number', maxLength: 10),
+              buildTextField(
+                'Faculty Number',
+                facultyNumberController,
+                maxLength: 10,
+              ),
               buildTextField(
                 'Mobile Number',
+                mobileController,
                 keyboardType: TextInputType.phone,
                 maxLength: 10,
               ),
+              const SizedBox(height: 12),
+              buildImageUploader(
+                "Add ID Proof",
+                _idProofImage,
+                _pickIDProofImage,
+              ),
+
+              Column(
+                children: [
+                  Text(
+                    "Scan to Pay",
+                    style: TextStyle(
+                      color: Colors.cyanAccent,
+                      fontFamily: 'VT323',
+                      fontSize: 18,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    height: 200,
+                    width: 200,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.cyanAccent),
+                      borderRadius: BorderRadius.circular(16),
+                      color: Color(0xFF1A1A2E),
+                    ),
+                    padding: EdgeInsets.all(10),
+                    child: Image.asset(
+                      'assets/images/qr_code.jpg',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
+
+              buildImageUploader(
+                "Add Payment Proof",
+                _paymentProofImage,
+                _pickPaymentProofImage,
+              ),
 
               const SizedBox(height: 24),
-
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.cyanAccent,
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 12,
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.cyanAccent,
+                    foregroundColor: Colors.black,
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: _submitForm,
+                  child: Text(
+                    "Submit",
+                    style: TextStyle(fontFamily: 'VT323', fontSize: 20),
                   ),
                 ),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {}
-                },
-                child: const Text(
-                  "SUBMIT",
-                  style: TextStyle(fontFamily: 'VT323', fontSize: 20),
-                ),
               ),
+              const SizedBox(height: 45),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget buildTextField(
-    String label, {
-    TextInputType? keyboardType,
-    int? maxLength,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: TextFormField(
-        keyboardType: keyboardType,
-        maxLength: maxLength,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(
-            color: Colors.cyanAccent,
-            fontFamily: 'VT323',
-            fontSize: 18,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.cyanAccent, width: 2),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.cyanAccent, width: 2),
-          ),
-          filled: true,
-          fillColor: Color(0xFF0A0E21),
-        ),
-        style: const TextStyle(
-          color: Colors.white,
-          fontFamily: 'VT323',
-          fontSize: 18,
-        ),
-      ),
-    );
-  }
-
-  Widget buildDropdown(
-    String label,
-    List<String> items,
-    Function(String?) onChanged,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: DropdownButtonFormField<String>(
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(
-            color: Colors.cyanAccent,
-            fontFamily: 'VT323',
-            fontSize: 18,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.cyanAccent, width: 2),
-          ),
-          filled: true,
-          fillColor: Color(0xFF0A0E21),
-        ),
-        dropdownColor: Color(0xFF1A1A2E),
-        iconEnabledColor: Colors.cyanAccent,
-        style: const TextStyle(
-          color: Colors.white,
-          fontFamily: 'VT323',
-          fontSize: 18,
-        ),
-        items: items
-            .map((item) => DropdownMenuItem(value: item, child: Text(item)))
-            .toList(),
-        onChanged: onChanged,
       ),
     );
   }

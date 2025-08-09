@@ -1,0 +1,291 @@
+{
+  "project_info": {
+    "project_number": "911524271284",
+    "firebase_url": "https://amu-roboclub.firebaseio.com",
+    "project_id": "amu-roboclub",
+    "storage_bucket": "amu-roboclub.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911524271284:android:57ab1baf3f0e9779",
+        "android_client_info": {
+          "package_name": "amu.roboclub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911524271284-5vhh9lk94e39sdkl1uk4tmce3bmb4rmi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amu.roboclub",
+            "certificate_hash": "ffb22ff077d733908b209c1124454a96d64b735f"
+          }
+        },
+        {
+          "client_id": "911524271284-g5vqou52svslevrlj9e0jt53bgdtfs26.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amu.roboclub",
+            "certificate_hash": "0a57c687d3f0cc7edd28a54ee586bdb0f9c302aa"
+          }
+        },
+        {
+          "client_id": "911524271284-j2ti3r81ih8tpa3gt8dm3da1hmkk8tl3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amu.roboclub",
+            "certificate_hash": "808a7e83f9b4fd8a7cd1974088930e2f230a736a"
+          }
+        },
+        {
+          "client_id": "911524271284-mr81j1fetse794tuhks8g3gc8g21q4bq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amu.roboclub",
+            "certificate_hash": "0e3da585449a12ec3b6dff61a79ac53cf67d7abd"
+          }
+        },
+        {
+          "client_id": "911524271284-5i9jbdmdjdejom8bujohfv2ndm4p656s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGdsZk49eDRH6IiSyaqc44VSFUBB3EXbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106708473389460873103",
+              "client_type": 3
+            },
+            {
+              "client_id": "911524271284-2j5jtfarm9sarfqkohn4hpfsottm6ki6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.robo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911524271284:android:27a06e4da0ec1f838073e1",
+        "android_client_info": {
+          "package_name": "amuroboclub.roboclub_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911524271284-2fruk473354kuvgrs96ssjp1kci7uj9t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter",
+            "certificate_hash": "ffe94d82a530642477d0e5ce23ec335a278f57ee"
+          }
+        },
+        {
+          "client_id": "911524271284-7as5l1hgl304j8r1qqsulvo40e2ab83q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter",
+            "certificate_hash": "ffb22ff077d733908b209c1124454a96d64b735f"
+          }
+        },
+        {
+          "client_id": "911524271284-ame880jfq2qsffda46ar1c5tc5c47d58.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter",
+            "certificate_hash": "36540af8cffbb65dcb3ec6b6a0e65f6c2948d7ee"
+          }
+        },
+        {
+          "client_id": "911524271284-aucbl2de4m6rlh80g1hec0f7lj69kq7c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter",
+            "certificate_hash": "1093a0d491bce5e533c42471e9ebcf15f6541355"
+          }
+        },
+        {
+          "client_id": "911524271284-b4r7ifhi8lsun2t5orq62umha9660u91.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter",
+            "certificate_hash": "808a7e83f9b4fd8a7cd1974088930e2f230a736a"
+          }
+        },
+        {
+          "client_id": "911524271284-gfd69loe5hkc4i1mlbelhnrmpr5acfjs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter",
+            "certificate_hash": "d95d61f3a54539f1810111836b9fd0f4e489fc26"
+          }
+        },
+        {
+          "client_id": "911524271284-ini9lc6b04ln7e27j8gqfh8bbjibelea.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter",
+            "certificate_hash": "e350911af65cce52fc5785ffb5c8d037a72c8c18"
+          }
+        },
+        {
+          "client_id": "911524271284-o4no3bjj0spb0dvje7opolk8m1hdimm1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter",
+            "certificate_hash": "4a4d764afc48390a56e3a29e90e72899c4a5a91b"
+          }
+        },
+        {
+          "client_id": "911524271284-phrjla8flihvfqbkvs6mabrj5nc3oamt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter",
+            "certificate_hash": "abecee6201264401405fcf620427c47d202a8d0e"
+          }
+        },
+        {
+          "client_id": "911524271284-sqcrhlvgafqelothftnlr8k2l608ddic.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter",
+            "certificate_hash": "a39c3e2631041f6cdb71b130b846efedf883e4cc"
+          }
+        },
+        {
+          "client_id": "911524271284-5i9jbdmdjdejom8bujohfv2ndm4p656s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGdsZk49eDRH6IiSyaqc44VSFUBB3EXbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106708473389460873103",
+              "client_type": 3
+            },
+            {
+              "client_id": "911524271284-2j5jtfarm9sarfqkohn4hpfsottm6ki6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.robo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911524271284:android:10cedb7db61118ea8073e1",
+        "android_client_info": {
+          "package_name": "amuroboclub.roboclub_flutter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911524271284-019e7rt0oanpvnq3ej0co91osstrarql.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter_app",
+            "certificate_hash": "cbf3e3738cb01d9a2e7f9d8f96492e961d2f0085"
+          }
+        },
+        {
+          "client_id": "911524271284-cf3h8bqts0j0h6uni0rh1otor1bl9cd2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter_app",
+            "certificate_hash": "808a7e83f9b4fd8a7cd1974088930e2f230a736a"
+          }
+        },
+        {
+          "client_id": "911524271284-qeqvfqq558s0c96n8i8ktfe4kbjoa0ad.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "amuroboclub.roboclub_flutter_app",
+            "certificate_hash": "69a71bd90c6f3c0e8a027a8b20f2771acb4d8970"
+          }
+        },
+        {
+          "client_id": "911524271284-5i9jbdmdjdejom8bujohfv2ndm4p656s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGdsZk49eDRH6IiSyaqc44VSFUBB3EXbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106708473389460873103",
+              "client_type": 3
+            },
+            {
+              "client_id": "911524271284-2j5jtfarm9sarfqkohn4hpfsottm6ki6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.robo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911524271284:android:3f0b5a1737dd7fa18073e1",
+        "android_client_info": {
+          "package_name": "com.example.robo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911524271284-5i9jbdmdjdejom8bujohfv2ndm4p656s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGdsZk49eDRH6IiSyaqc44VSFUBB3EXbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106708473389460873103",
+              "client_type": 3
+            },
+            {
+              "client_id": "911524271284-2j5jtfarm9sarfqkohn4hpfsottm6ki6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.robo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

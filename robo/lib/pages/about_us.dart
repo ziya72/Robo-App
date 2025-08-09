@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:robo/components/side_drawer.dart';
+import 'package:robo/components/navbar.dart';
 
 class AboutUsPage extends StatelessWidget {
+  const AboutUsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Layout(
+      currentIndex: 3,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: _buildAboutUsView(),
@@ -20,7 +23,7 @@ class AboutUsPage extends StatelessWidget {
           const SizedBox(height: 14),
           const Center(
             child: Text(
-              'ABOUT US',
+              'About Us',
               style: TextStyle(
                 fontFamily: 'PressStart2P',
                 fontSize: 20,
@@ -28,10 +31,18 @@ class AboutUsPage extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 8),
+          const Text(
+            'Where Innovation meets Implementation',
+            style: TextStyle(
+              fontFamily: 'VT323',
+              fontSize: 22,
+              color: Colors.white,
+            ),
+          ),
 
           const Text(
-            'This is just some random sample sentences will write stuff later once i get the approval that this isnt absolute trash. Wow apprently this was super less text need to fill in a lot more to actually cover the entire page. On that note the home page is done. the buttons are not working right now, Components page is done and the form is done. payment part and the data storing of the form isnt done. Members page is done, gallery is done, member form is done. need to make the Splash screen animation. No idea how to do that though. Events page and projects page layout is ready in my notebook. need to figure out the separate event pop up thing. Anyways i hope this much is enough.',
+            'Here At AMURoboClub, we are not just about building robots, we are about helping students become creative thinkers and problem-solvers. With awesome support from our ZHCET faculty, this is a space where ideas come to life, experiments are fun, and learning happens by doing cool projects together.',
             style: TextStyle(
               fontFamily: 'VT323',
               fontSize: 20,
@@ -39,7 +50,31 @@ class AboutUsPage extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 20),
+
+          const Center(
+            child: Text(
+              'Our Mission',
+              style: TextStyle(
+                fontFamily: 'PressStart2P',
+                fontSize: 20,
+                color: Colors.cyanAccent,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+          const Text(
+            'To spark innovation through hands-on learning, mentorship, and real-world challenges. We bring together students from all backgrounds to build a collaborative, inclusive, and competitive robotics ecosystem.',
+            style: TextStyle(
+              fontFamily: 'VT323',
+              fontSize: 20,
+              color: Colors.white70,
+            ),
+            textAlign: TextAlign.center,
+          ),
+
+          const SizedBox(height: 15),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
