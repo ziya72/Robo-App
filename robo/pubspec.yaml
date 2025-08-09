@@ -31,11 +31,18 @@ dependencies:
   flutter:
     sdk: flutter
   firebase_core: ^3.15.1
+  cloud_firestore: ^5.6.11
+  cached_network_image: ^3.2.3
+  url_launcher: ^6.2.8
+  image_picker: ^0.8.3+2
+  firebase_storage: ^12.4.10
+  audioplayers: ^5.2.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.1.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
@@ -52,11 +59,11 @@ flutter:
   assets:
     - assets/icons/Chat_bot-bro.png
     - assets/images/
-    - assets/events/
     - assets/fonts/ 
-    - assets/gallery/
     - assets/icons/
     - assets/projects/
+    - assets/scroll.mp3
+    - assets/teams/
 
   fonts:
     - family: VT323
