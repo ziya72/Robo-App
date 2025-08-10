@@ -1,40 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:robo/components/side_drawer.dart';
+import 'package:robo/components/navbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:robo/models/model.dart';
 
 class ComponentsPage extends StatefulWidget {
+  const ComponentsPage({super.key});
+
   @override
   _ComponentsPageState createState() => _ComponentsPageState();
 }
 
 class _ComponentsPageState extends State<ComponentsPage> {
-  final List<Map<String, String>> components = [
-    {
-      'name': 'Fatima Arif',
-      'year': '1st Year',
-      'branch': 'COE',
-      'image': 'assets/images/robot1.png',
-      'issued': 'Arduino Uno, Wires',
-    },
-    {
-      'name': 'Ziya Ali',
-      'year': '2nd Year',
-      'branch': 'COE',
-      'image': 'assets/images/robot2.png',
-      'issued': 'Cables',
-    },
-    {
-      'name': 'Iram Amin',
-      'year': '3rd Year',
-      'branch': 'COE',
-      'image': 'assets/images/robot3.png',
-      'issued': 'Sensors, LEDs',
-    },
-    // Add more people who got components here
-  ];
+  List<ComponentModel> components = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchComponents();
+  }
+
+  Future<void> fetchComponents() async {
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection('registeredForComponents')
+            .get();
+
+    final data =
+        snapshot.docs.map((doc) => ComponentModel.fromMap(doc.data())).toList();
+
+    setState(() {
+      components = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Layout(
+      currentIndex: 2,
       body: SafeArea(
         child: Column(
           children: [
@@ -53,7 +55,6 @@ class _ComponentsPageState extends State<ComponentsPage> {
                       fontSize: 20,
                       color: Colors.cyanAccent,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   GestureDetector(
                     onTap: () {
@@ -71,20 +72,31 @@ class _ComponentsPageState extends State<ComponentsPage> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                itemCount: components.length,
-                itemBuilder: (context, index) {
-                  final comp = components[index];
-                  return ComponentCard(
-                    name: comp['name']!,
-                    year: comp['year']!,
-                    branch: comp['branch']!,
-                    imagePath: comp['image']!,
-                    issued: comp['issued']!,
-                  );
-                },
-              ),
+              child:
+                  components.isEmpty
+                      ? const Center(
+                        child: Text(
+                          'No data found.',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                      : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        itemCount: components.length,
+                        itemBuilder: (context, index) {
+                          final comp = components[index];
+                          final imagePath =
+                              'assets/images/robot${(index % 3) + 1}.png';
+
+                          return ComponentCard(
+                            name: comp.name,
+                            course: comp.course,
+                            year: comp.yearOfStudy,
+                            componentName: comp.componentsName,
+                            imagePath: imagePath,
+                          );
+                        },
+                      ),
             ),
           ],
         ),
@@ -95,17 +107,18 @@ class _ComponentsPageState extends State<ComponentsPage> {
 
 class ComponentCard extends StatelessWidget {
   final String name;
+  final String course;
   final String year;
-  final String branch;
+  final String componentName;
   final String imagePath;
-  final String issued;
 
   const ComponentCard({
+    super.key,
     required this.name,
+    required this.course,
     required this.year,
-    required this.branch,
+    required this.componentName,
     required this.imagePath,
-    required this.issued,
   });
 
   @override
@@ -115,8 +128,7 @@ class ComponentCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: const Color(0xFF27293D),
-        border: Border.all(color: Colors.white, width: 2),
-        boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2, 2))],
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
@@ -135,7 +147,7 @@ class ComponentCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '$year, $branch',
+                  '$course, $year Year',
                   style: const TextStyle(
                     fontFamily: 'VT323',
                     fontSize: 14,
@@ -144,7 +156,7 @@ class ComponentCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '$issued ',
+                  componentName,
                   style: const TextStyle(
                     fontFamily: 'VT323',
                     fontSize: 13,

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:robo/components/side_drawer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'package:robo/components/navbar.dart';
+import 'package:robo/pages/event_details.dart';
+import 'package:robo/models/model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class EventsPage extends StatefulWidget {
   @override
@@ -7,78 +12,58 @@ class EventsPage extends StatefulWidget {
 }
 
 class _EventsPageState extends State<EventsPage> {
-  bool showUpcoming = false;
-  bool showPast = false;
-
-  final List<Map<String, dynamic>> events = [
-    {
-      'name': 'Line Follower Challenge',
-      'date': '15-07-25',
-      'image': 'assets/events/events2.webp',
-      'isUpcoming': true,
-    },
-    {
-      'name': 'Arduino Workshop',
-      'date': '10-07-2025',
-      'image': 'assets/events/events1.webp',
-      'isUpcoming': true,
-    },
-    {
-      'name': 'Robotica 2024',
-      'date': '12-11-2024',
-      'image': 'assets/events/events2.webp',
-      'isUpcoming': false,
-    },
-    {
-      'name': 'Fundamentals in C',
-      'date': '19-11-2024',
-      'image': 'assets/events/events1.webp',
-      'isUpcoming': false,
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final filteredEvents =
-        events.where((event) {
-          if (showUpcoming && !event['isUpcoming']) return false;
-          if (showPast && event['isUpcoming']) return false;
-          return true;
-        }).toList();
-
     return Layout(
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'EVENTS',
               style: TextStyle(
                 fontFamily: 'PressStart2P',
-                fontSize: 20,
+                fontSize: 18,
                 color: Colors.cyanAccent,
               ),
             ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildFilterButton('Upcoming', showUpcoming, () {
-                  setState(() => showUpcoming = !showUpcoming);
-                }),
-                SizedBox(width: 16),
-                _buildFilterButton('Past', showPast, () {
-                  setState(() => showPast = !showPast);
-                }),
-              ],
-            ),
-            SizedBox(height: 16),
+            const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: filteredEvents.length,
-                itemBuilder: (context, index) {
-                  final event = filteredEvents[index];
-                  return _buildEventCard(event);
+              child: StreamBuilder(
+                stream:
+                    FirebaseFirestore.instance
+                        .collection('events')
+                        .orderBy('date', descending: true)
+                        .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    );
+                  }
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'No events found.',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'VT323',
+                          fontSize: 20,
+                        ),
+                      ),
+                    );
+                  }
+
+                  final events = snapshot.data!.docs;
+
+                  return ListView.builder(
+                    padding: EdgeInsets.only(bottom: 20),
+                    itemCount: events.length,
+                    itemBuilder: (context, index) {
+                      final event = events[index].data();
+                      return _buildEventCard(event);
+                    },
+                  );
                 },
               ),
             ),
@@ -88,86 +73,85 @@ class _EventsPageState extends State<EventsPage> {
     );
   }
 
-  Widget _buildFilterButton(String label, bool selected, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        decoration: BoxDecoration(
-          color: selected ? Colors.cyanAccent : Colors.transparent,
-          border: Border.all(color: Colors.cyanAccent),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontFamily: 'VT323',
-            fontSize: 18,
-            color: selected ? Colors.black : Colors.cyanAccent,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildEventCard(Map<String, dynamic> event) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      height: 180,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        image: DecorationImage(
-          image: AssetImage(event['image']),
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-            Colors.black.withValues(alpha: 0.25),
-            BlendMode.darken,
+    final String date = event['date'] ?? '';
+    final formattedDate =
+        date.isNotEmpty
+            ? DateFormat('dd MMM yyyy').format(DateTime.parse(date))
+            : 'No date';
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) =>
+                    EventDetailsPage(event: EventDetailModel.fromMap(event)),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        height: 200,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          image: DecorationImage(
+            image: CachedNetworkImageProvider(event['posterURL'] ?? ''),
+            fit: BoxFit.cover,
           ),
         ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 70,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.4),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(12),
-                  bottomRight: Radius.circular(12),
+        child: Stack(
+          children: [
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: 90,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(14),
+                  ),
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withValues(alpha: 2),
+                      Colors.transparent,
+                    ],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                  ),
                 ),
               ),
             ),
-          ),
-
-          Positioned(
-            left: 16,
-            bottom: 28,
-            child: Text(
-              event['name'],
-              style: TextStyle(
-                fontFamily: 'VT323',
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+            Positioned(
+              left: 16,
+              bottom: 40,
+              child: Text(
+                event['eventName'] ?? 'Event',
+                style: const TextStyle(
+                  fontFamily: 'VT323',
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
-          ),
-          Positioned(
-            left: 16,
-            bottom: 10,
-            child: Text(
-              event['date'],
-              style: TextStyle(
-                fontFamily: 'VT323',
-                fontSize: 15,
-                color: const Color.fromARGB(255, 255, 255, 255),
+            Positioned(
+              left: 16,
+              bottom: 16,
+              child: Text(
+                formattedDate,
+                style: const TextStyle(
+                  fontFamily: 'VT323',
+                  fontSize: 18,
+                  color: Colors.white70,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

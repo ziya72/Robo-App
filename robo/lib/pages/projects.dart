@@ -1,61 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:robo/components/side_drawer.dart';
+import 'package:intl/intl.dart';
+import 'package:robo/components/navbar.dart';
+import 'package:robo/models/model.dart';
+import 'package:robo/pages/project_detail.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ProjectsPage extends StatefulWidget {
+  const ProjectsPage({super.key});
+
   @override
   _ProjectsPageState createState() => _ProjectsPageState();
 }
 
 class _ProjectsPageState extends State<ProjectsPage> {
-  bool showOngoing = false;
-  bool showCompleted = false;
+  String selectedFilter = 'All';
 
-  final List<Map<String, dynamic>> projects = [
-    {
-      'name': 'Line Bot',
-      'date': '11-08-2025',
-      'image': 'assets/projects/project2.png',
-      'completion': 20,
-      'isOngoing': true,
-    },
-    {
-      'name': 'Hand Gesture Bot',
-      'date': '14-02-2025',
-      'image': 'assets/projects/project1.png',
-      'completion': 60,
-      'isOngoing': true,
-    },
-    {
-      'name': 'Mind control robot',
-      'date': '23-05-2024',
-      'image': 'assets/projects/project2.png',
-      'completion': 100,
-      'isOngoing': false,
-    },
-    {
-      'name': 'Something XYZ',
-      'date': '13-01-2024',
-      'image': 'assets/projects/project1.png',
-      'completion': 100,
-      'isOngoing': false,
-    },
-  ];
+  Stream<QuerySnapshot> _getProjectsStream() {
+    return FirebaseFirestore.instance
+        .collection('projects')
+        .orderBy('date', descending: true)
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final filteredProjects =
-        projects.where((project) {
-          if (showOngoing && !project['isOngoing']) return false;
-          if (showCompleted && project['isOngoing']) return false;
-          return true;
-        }).toList();
-
     return Layout(
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'OUR PROJECTS',
               style: TextStyle(
                 fontFamily: 'PressStart2P',
@@ -63,26 +38,70 @@ class _ProjectsPageState extends State<ProjectsPage> {
                 color: Colors.cyanAccent,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildFilterButton('Ongoing', showOngoing, () {
-                  setState(() => showOngoing = !showOngoing);
-                }),
-                SizedBox(width: 16),
-                _buildFilterButton('Completed', showCompleted, () {
-                  setState(() => showCompleted = !showCompleted);
-                }),
+                _buildFilterButton('All'),
+                const SizedBox(width: 10),
+                _buildFilterButton('Ongoing'),
+                const SizedBox(width: 10),
+                _buildFilterButton('Completed'),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
-              child: ListView.builder(
-                itemCount: filteredProjects.length,
-                itemBuilder: (context, index) {
-                  final project = filteredProjects[index];
-                  return _buildProjectCard(project);
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _getProjectsStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.cyanAccent,
+                      ),
+                    );
+                  }
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        "No Projects Found",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'VT323',
+                          fontSize: 20,
+                        ),
+                      ),
+                    );
+                  }
+                  final allProjects =
+                      snapshot.data!.docs
+                          .map(
+                            (doc) => ProjectDetailModel.fromMap(
+                              doc.data() as Map<String, dynamic>,
+                            ),
+                          )
+                          .toList();
+
+                  final filteredProjects =
+                      allProjects.where((project) {
+                        final int progress =
+                            int.tryParse(project.progress) ?? 0;
+                        if (selectedFilter == 'Ongoing' && progress == 100) {
+                          return false;
+                        }
+                        if (selectedFilter == 'Completed' && progress < 100) {
+                          return false;
+                        }
+                        return true;
+                      }).toList();
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    itemCount: filteredProjects.length,
+                    itemBuilder: (context, index) {
+                      return _buildProjectCard(filteredProjects[index]);
+                    },
+                  );
                 },
               ),
             ),
@@ -92,14 +111,19 @@ class _ProjectsPageState extends State<ProjectsPage> {
     );
   }
 
-  Widget _buildFilterButton(String label, bool selected, VoidCallback onTap) {
+  Widget _buildFilterButton(String label) {
+    final selected = selectedFilter == label;
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      onTap: () {
+        setState(() => selectedFilter = label);
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: selected ? Colors.cyanAccent : Colors.transparent,
-          border: Border.all(color: Colors.cyanAccent),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.cyanAccent, width: 1.5),
         ),
         child: Text(
           label,
@@ -113,52 +137,105 @@ class _ProjectsPageState extends State<ProjectsPage> {
     );
   }
 
-  Widget _buildProjectCard(Map<String, dynamic> project) {
-    String completionAsset = 'assets/projects/done${project['completion']}.png';
+  Widget _buildProjectCard(ProjectDetailModel project) {
+    String imageUrl = '';
+    if (project.projectImg.isNotEmpty &&
+        project.projectImg[0].startsWith('http')) {
+      imageUrl = project.projectImg[0];
+    }
 
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Color(0xFF27293D),
-        border: Border.all(color: Colors.cyanAccent, width: 1),
-      ),
-      child: Row(
-        children: [
-          Image.asset(
-            project['image'],
-            width: 110,
-            height: 110,
-            fit: BoxFit.cover,
+    String formattedDate;
+    try {
+      formattedDate = DateFormat(
+        'dd MMM yyyy',
+      ).format(DateTime.parse(project.date));
+    } catch (_) {
+      formattedDate = project.date;
+    }
+
+    String progressStr = project.progress;
+    List<String> validProgress = ['20', '40', '60', '80', '100'];
+    String assetValue =
+        validProgress.contains(progressStr) ? progressStr : '20';
+    String completionAsset = 'assets/projects/done$assetValue.png';
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProjectDetailsPage(project: project),
           ),
-          SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  project['name'],
-                  style: TextStyle(
-                    fontFamily: 'VT323',
-                    fontSize: 23,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 3),
-                Text(
-                  project['date'],
-                  style: TextStyle(
-                    fontFamily: 'VT323',
-                    fontSize: 16,
-                    color: Colors.white70,
-                  ),
-                ),
-                SizedBox(height: 5),
-                Image.asset(completionAsset, height: 71),
-              ],
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1D1F33),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child:
+                  imageUrl.isNotEmpty
+                      ? CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => Container(
+                              width: 100,
+                              height: 100,
+                              color: Colors.grey.shade800,
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.cyanAccent,
+                                ),
+                              ),
+                            ),
+                        // No errorWidget (per your request)
+                      )
+                      : Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.grey.shade800,
+                      ),
             ),
-          ),
-        ],
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    project.name,
+                    style: const TextStyle(
+                      fontFamily: 'VT323',
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    formattedDate,
+                    style: const TextStyle(
+                      fontFamily: 'VT323',
+                      fontSize: 16,
+                      color: Colors.white70,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Image.asset(completionAsset, height: 58),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
