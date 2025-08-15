@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TeamPage extends StatefulWidget {
-  const TeamPage({Key? key}) : super(key: key);
+  const TeamPage({super.key});
 
   @override
   State<TeamPage> createState() => _TeamPageState();
@@ -21,13 +21,13 @@ class _TeamPageState extends State<TeamPage> {
           children: [
             Text(
               'Roboclub Team',
-              style: TextStyle(fontFamily: 'PressStart2(
-                textStyle: const TextStyle(
-                  color: Colors.cyanAccent,
-                  fontSize: 18,
-                ),
+              style: TextStyle(
+                fontFamily: 'PressStart2',
+                color: Colors.cyanAccent,
+                fontSize: 18,
               ),
             ),
+
             const SizedBox(height: 20),
             DropdownButton<int>(
               dropdownColor: Colors.grey[900],
