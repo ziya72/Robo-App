@@ -22,7 +22,7 @@ class _AppBottomNavigationBarState extends State<AppBottomNavigationBar> {
         backgroundColor: AppColors.background,
         currentIndex: currentIndex,
         selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.textSecondary,
+        unselectedItemColor: Colors.pink,
         onTap: (index) {
           setState(() {
             currentIndex = index;

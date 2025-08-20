@@ -29,6 +29,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Layout(
+      //appBar: AppBar(
+      //  backgroundColor: Colors.transparent,
+      //  leading: IconButton(
+      //    icon: const Icon(Icons.arrow_back, color: Colors.white),
+      //    onPressed: () => Navigator.pop(context),
+      //  ),
+      //),
       currentIndex: 0,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -88,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                     return Transform.scale(
                       scale: focused ? 1.0 : 0.85,
                       child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
+                        margin: const EdgeInsets.symmetric(horizontal: 1),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                           border:
@@ -179,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                                   : null,
                           image: DecorationImage(
                             image: AssetImage(
-                              'assets/teams/team${index + 1}.jpg',
+                              'assets/events/team${index + 1}.jpg',
                             ),
                             fit: BoxFit.cover,
                           ),

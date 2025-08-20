@@ -7,6 +7,7 @@ class ComponentsPage extends StatefulWidget {
   const ComponentsPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ComponentsPageState createState() => _ComponentsPageState();
 }
 
@@ -36,67 +37,119 @@ class _ComponentsPageState extends State<ComponentsPage> {
   @override
   Widget build(BuildContext context) {
     return Layout(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       currentIndex: 2,
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 12,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'COMPONENTS',
-                    style: TextStyle(
-                      fontFamily: 'PressStart2P',
-                      fontSize: 20,
-                      color: Colors.cyanAccent,
-                    ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 12,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/components/component_form',
-                      );
-                    },
-                    child: Image.asset(
-                      'assets/images/pixel_plus.png',
-                      height: 32,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child:
-                  components.isEmpty
-                      ? const Center(
-                        child: Text(
-                          'No data found.',
-                          style: TextStyle(color: Colors.white),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'COMPONENTS',
+                        style: TextStyle(
+                          fontFamily: 'PressStart2P',
+                          fontSize: 20,
+                          color: Colors.cyanAccent,
                         ),
-                      )
-                      : ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        itemCount: components.length,
-                        itemBuilder: (context, index) {
-                          final comp = components[index];
-                          final imagePath =
-                              'assets/images/robot${(index % 3) + 1}.png';
+                      ),
+                      //GestureDetector(
+                      //  onTap: () {
+                      //    Navigator.pushNamed(
+                      //      context,
+                      //      '/components/component_form',
+                      //    );
+                      //  },
+                      //  child: Image.asset(
+                      //    'assets/images/pixel_plus.png',
+                      //    height: 32,
+                      //  ),
+                      //),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child:
+                      components.isEmpty
+                          ? const Center(
+                            child: Text(
+                              'No data found.',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )
+                          : ListView.builder(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12.0,
+                            ),
+                            itemCount: components.length,
+                            itemBuilder: (context, index) {
+                              final comp = components[index];
+                              final imagePath =
+                                  'assets/images/robot${(index % 3) + 1}.png';
 
-                          return ComponentCard(
-                            name: comp.name,
-                            course: comp.course,
-                            year: comp.yearOfStudy,
-                            componentName: comp.componentsName,
-                            imagePath: imagePath,
+                              return ComponentCard(
+                                name: comp.name,
+                                course: comp.course,
+                                year: comp.yearOfStudy,
+                                componentName: comp.componentsName,
+                                imagePath: imagePath,
+                              );
+                            },
+                          ),
+                ),
+              ],
+            ),
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.yellowAccent),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.yellowAccent,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Get Components",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'VT323',
+                          fontSize: 20,
+                        ),
+                      ),
+                      SizedBox(width: 3),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/components/component_form',
                           );
                         },
+                        child: Image.asset(
+                          'assets/images/pixel_plus.png',
+                          height: 32,
+                        ),
                       ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         ),
