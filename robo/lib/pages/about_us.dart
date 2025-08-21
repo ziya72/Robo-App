@@ -8,6 +8,13 @@ class AboutUsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Layout(
       currentIndex: 3,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: _buildAboutUsView(),
@@ -79,8 +86,8 @@ class AboutUsPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: const [
-              _StatsBox(count: '88', label: 'Members'),
-              _StatsBox(count: '40', label: 'Projects'),
+              _StatsBox(count: '100+', label: 'Members'),
+              _StatsBox(count: '40+', label: 'Projects'),
               _StatsBox(count: '15', label: 'Awards'),
             ],
           ),

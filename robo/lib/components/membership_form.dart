@@ -274,6 +274,15 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     style: TextStyle(
                       color: Colors.cyanAccent,
                       fontFamily: 'VT323',
+                      fontSize: 20,
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    "Membership Fee: ₹250",
+                    style: TextStyle(
+                      color: Colors.cyanAccent,
+                      fontFamily: 'VT323',
                       fontSize: 18,
                     ),
                   ),

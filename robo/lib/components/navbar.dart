@@ -5,10 +5,11 @@ import '/pages/about_us.dart';
 import '/pages/members.dart';
 
 class Layout extends StatelessWidget {
+  final PreferredSizeWidget? appBar;
   final Widget body;
   final int? currentIndex;
 
-  const Layout({super.key, required this.body, this.currentIndex});
+  const Layout({super.key, this.appBar, required this.body, this.currentIndex});
 
   void _onItemTapped(BuildContext context, int index) {
     Widget page;
@@ -34,15 +35,17 @@ class Layout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const Color backgroundColor = Color.fromARGB(255, 2, 2, 2);
+
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 2, 2, 2),
+      backgroundColor: backgroundColor, //const Color.fromARGB(255, 2, 2, 2),
       body: SafeArea(child: body),
+      appBar: appBar,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex ?? 0,
         onTap: (index) => _onItemTapped(context, index),
-        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         selectedItemColor: Colors.cyanAccent,
-        unselectedItemColor: const Color.fromARGB(255, 2, 2, 2),
+        unselectedItemColor: Colors.white,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         items: const [

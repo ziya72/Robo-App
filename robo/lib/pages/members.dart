@@ -33,83 +33,134 @@ class _MembersPageState extends State<MembersPage> {
   @override
   Widget build(BuildContext context) {
     return Layout(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       currentIndex: 1,
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 12,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'MEMBERS',
-                    style: TextStyle(
-                      fontFamily: 'PressStart2P',
-                      fontSize: 20,
-                      color: Colors.cyanAccent,
-                    ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 12,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/components/membership_form',
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'MEMBERS',
+                        style: TextStyle(
+                          fontFamily: 'PressStart2P',
+                          fontSize: 20,
+                          color: Colors.cyanAccent,
+                        ),
+                      ),
+                      //GestureDetector(
+                      //  onTap: () {
+                      //    Navigator.pushNamed(
+                      //      context,
+                      //      '/components/membership_form',
+                      //    );
+                      //  },
+                      //  child: Image.asset(
+                      //    'assets/images/pixel_plus.png',
+                      //    height: 32,
+                      //  ),
+                      //),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: StreamBuilder<List<Member>>(
+                    stream: _getPaidMembersStream(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            "No Members Found",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        );
+                      }
+
+                      final members = snapshot.data!;
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: GridView.builder(
+                          itemCount: members.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 20,
+                                crossAxisSpacing: 12,
+                                childAspectRatio: 0.7,
+                              ),
+                          itemBuilder: (context, index) {
+                            final member = members[index];
+                            final imagePath = robotImages[index % 3];
+                            return MemberCard(
+                              name: member.name,
+                              course: member.course,
+                              enrollmentNumber: member.enrollmentNumber,
+                              imagePath: imagePath,
+                            );
+                          },
+                        ),
                       );
                     },
-                    child: Image.asset(
-                      'assets/images/pixel_plus.png',
-                      height: 32,
-                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Expanded(
-              child: StreamBuilder<List<Member>>(
-                stream: _getPaidMembersStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        "No Members Found",
-                        style: TextStyle(color: Colors.white),
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.yellowAccent),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.yellowAccent,
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Membership Form",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'VT323',
+                          fontSize: 20,
+                        ),
                       ),
-                    );
-                  }
-
-                  final members = snapshot.data!;
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: GridView.builder(
-                      itemCount: members.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            mainAxisSpacing: 20,
-                            crossAxisSpacing: 12,
-                            childAspectRatio: 0.7,
-                          ),
-                      itemBuilder: (context, index) {
-                        final member = members[index];
-                        final imagePath = robotImages[index % 3];
-                        return MemberCard(
-                          name: member.name,
-                          course: member.course,
-                          enrollmentNumber: member.enrollmentNumber,
-                          imagePath: imagePath,
-                        );
-                      },
-                    ),
-                  );
-                },
+                      SizedBox(width: 5),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/components/membership_form',
+                          );
+                        },
+                        child: Image.asset(
+                          'assets/images/pixel_plus.png',
+                          height: 32,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
