@@ -42,6 +42,7 @@ class Layout extends StatelessWidget {
       body: SafeArea(child: body),
       appBar: appBar,
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex ?? 0,
         onTap: (index) => _onItemTapped(context, index),
         selectedItemColor: Colors.cyanAccent,
