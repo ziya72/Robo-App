@@ -38,11 +38,12 @@ class Layout extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 2, 2, 2),
       body: SafeArea(child: body),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex ?? 0,
         onTap: (index) => _onItemTapped(context, index),
-        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+        backgroundColor: const Color(0xFF27293D),
         selectedItemColor: Colors.cyanAccent,
-        unselectedItemColor: const Color.fromARGB(255, 2, 2, 2),
+        unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
         showSelectedLabels: false,
         showUnselectedLabels: false,
         items: const [

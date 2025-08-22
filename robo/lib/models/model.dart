@@ -130,6 +130,11 @@ class EventDetailModel {
     );
   }
 
+  factory EventDetailModel.fromSnapshot(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+    return EventDetailModel.fromMap(data);
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'eventName': eventName,
