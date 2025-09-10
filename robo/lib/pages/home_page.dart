@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,8 @@ import 'package:robo/models/model.dart';
 import 'projects.dart';
 import 'team.dart';
 import 'events.dart';
+import 'event_details.dart';
+import 'package:robo/pages/team.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,6 +28,25 @@ class _HomePageState extends State<HomePage> {
 
   final PageController eventsController = PageController(viewportFraction: 0.8);
   int eventsPage = 0;
+
+  late Future<List<EventDetailModel>> _eventsFuture; //ziya
+
+  @override //ziya
+  void initState() {
+    super.initState();
+    _eventsFuture = fetchEventsFromFirebase(); // 👈 assign once
+  } //ziya
+
+  Future<List<EventDetailModel>> fetchEventsFromFirebase() async {
+    final query =
+        await FirebaseFirestore.instance
+            .collection('events')
+            .orderBy('date', descending: true)
+            .limit(6)
+            .get();
+
+    return query.docs.map((doc) => EventDetailModel.fromSnapshot(doc)).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,13 +96,14 @@ class _HomePageState extends State<HomePage> {
                 child: _buildUI(),
               ),
               const SizedBox(height: 32),
+
               sectionTitle(
                 title: 'CONNECT',
                 subtitle: 'our team & alumni',
                 onTap:
                     () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const TeamPage()),
+                      MaterialPageRoute(builder: (_) => TeamPage()),
                     ),
               ),
               const SizedBox(height: 5),
@@ -114,6 +137,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
+
               const SizedBox(height: 25),
               sectionTitle(
                 title: 'BUILD',
@@ -128,7 +152,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 145,
                 child: PageView.builder(
-                  controller: teamController,
+                  controller: projectsController,
                   onPageChanged:
                       (index) => setState(() => projectsPage = index),
                   itemCount: 3,
@@ -139,12 +163,12 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 50),
                         decoration: BoxDecoration(
-                          //borderRadius: BorderRadius.circular(16),
-                          //border:
-                          //    focused
-                          //        ? Border.all(color: Colors.white, width: 2)
-                          //        : null,
                           image: DecorationImage(
+                            //borderRadius: BorderRadius.circular(16),
+                            //border:
+                            //    focused
+                            //        ? Border.all(color: Colors.white, width: 2)
+                            //        : null,
                             image: AssetImage(
                               'assets/projects/project${index + 1}.png',
                             ),
@@ -156,6 +180,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
+
               const SizedBox(height: 12),
               sectionTitle(
                 title: 'LEARN & PARTICIPATE',
@@ -166,36 +191,76 @@ class _HomePageState extends State<HomePage> {
                       MaterialPageRoute(builder: (_) => EventsPage()),
                     ),
               ),
+              const SizedBox(height: 12),
               SizedBox(
-                height: 145,
-                child: PageView.builder(
-                  controller: teamController,
-                  onPageChanged: (index) => setState(() => teamPage = index),
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    final focused = index == teamPage;
-                    return Transform.scale(
-                      scale: focused ? 1.0 : 0.85,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border:
-                              focused
-                                  ? Border.all(color: Colors.white, width: 2)
-                                  : null,
-                          image: DecorationImage(
-                            image: AssetImage(
-                              'assets/events/team${index + 1}.jpg',
+                height: 250,
+                child: FutureBuilder<List<EventDetailModel>>(
+                  future: _eventsFuture, //fetchEventsFromFirebase(), //ziya
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError) {
+                      return const Center(child: Text("Error loading events"));
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text("No events available"));
+                    }
+
+                    final events = snapshot.data!;
+
+                    return PageView.builder(
+                      scrollDirection: Axis.horizontal,
+                      controller: eventsController,
+                      physics: const PageScrollPhysics(),
+                      onPageChanged:
+                          (index) => setState(() => eventsPage = index),
+                      itemCount: events.length,
+                      itemBuilder: (context, index) {
+                        final event = events[index];
+                        final focused = index == eventsPage;
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => EventDetailsPage(event: event),
+                              ),
+                            );
+                          },
+                          child: Transform.scale(
+                            scale: focused ? 1.0 : 0.85,
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                border:
+                                    focused
+                                        ? Border.all(
+                                          color: Colors.white,
+                                          width: 2,
+                                        )
+                                        : null,
+                                image: DecorationImage(
+                                  image: CachedNetworkImageProvider(
+                                    event.posterURL,
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
-                            fit: BoxFit.cover,
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     );
                   },
                 ),
               ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -228,8 +293,18 @@ class _HomePageState extends State<HomePage> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 1),
-          GestureDetector(
-            onTap: onTap,
+          OutlinedButton(
+            onPressed: onTap,
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(
+                color: Colors.cyanAccent,
+                width: 2,
+              ), // Your desired border color and width
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

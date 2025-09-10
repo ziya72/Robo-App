@@ -10,14 +10,32 @@ class EventDetailsPage extends StatelessWidget {
   const EventDetailsPage({Key? key, required this.event}) : super(key: key);
 
   void _launchURL(BuildContext context, String url) async {
-    final uri = Uri.tryParse(url.trim());
+    //final uri = Uri.tryParse(url.trim()); ziya
+    String fixedUrl = url.trim();
 
-    if (uri != null && await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
+    if (!fixedUrl.startsWith("http")) {
+      fixedUrl = "https://$fixedUrl";
+    }
+
+    final Uri uri = Uri.parse(fixedUrl);
+
+    //if (uri != null && await canLaunchUrl(uri)) {
+    //  await launchUrl(uri, mode: LaunchMode.externalApplication);
+    //} else {
+    //  ScaffoldMessenger.of(
+    //    context,
+    //  ).showSnackBar(const SnackBar(content: Text("Could not open the link")));
+    //}
+    try {
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Could not open the link")),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text("Could not open the link")));
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
     }
   }
 

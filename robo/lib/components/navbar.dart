@@ -45,6 +45,7 @@ class Layout extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex ?? 0,
         onTap: (index) => _onItemTapped(context, index),
+        backgroundColor: const Color(0xFF27293D),
         selectedItemColor: Colors.cyanAccent,
         unselectedItemColor: Colors.white,
         showSelectedLabels: false,
