@@ -59,209 +59,225 @@ class _HomePageState extends State<HomePage> {
       //  ),
       //),
       currentIndex: 0,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
-                child: Text(
-                  'amuroboclub',
-                  style: const TextStyle(
-                    fontFamily: 'PressStart2P',
-                    fontSize: 29,
-                    color: Colors.cyanAccent,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 0),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22),
-                child: Text(
-                  'code,create,innovate',
-                  style: const TextStyle(
-                    fontFamily: 'PressStart2P',
-                    fontSize: 12,
-                    color: Colors.yellowAccent,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.only(right: 100.0, left: 100.0),
-                child: _buildUI(),
-              ),
-              const SizedBox(height: 32),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/background.png"),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.05),
+              BlendMode.dstATop,
+            ),
+          ),
+        ),
 
-              sectionTitle(
-                title: 'CONNECT',
-                subtitle: 'our team & alumni',
-                onTap:
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => TeamPage()),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20, right: 10, left: 10),
+                  child: Text(
+                    'amuroboclub',
+                    style: const TextStyle(
+                      fontFamily: 'PressStart2P',
+                      fontSize: 29,
+                      color: Colors.cyanAccent,
                     ),
-              ),
-              const SizedBox(height: 5),
-              SizedBox(
-                height: 145,
-                child: PageView.builder(
-                  controller: teamController,
-                  onPageChanged: (index) => setState(() => teamPage = index),
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    final focused = index == teamPage;
-                    return Transform.scale(
-                      scale: focused ? 1.0 : 0.85,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 1),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border:
-                              focused
-                                  ? Border.all(color: Colors.white, width: 2)
-                                  : null,
-                          image: DecorationImage(
-                            image: AssetImage(
-                              'assets/teams/team${index + 1}.jpg',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 22),
+                  child: Text(
+                    'code,create,innovate',
+                    style: const TextStyle(
+                      fontFamily: 'PressStart2P',
+                      fontSize: 12,
+                      color: Colors.yellowAccent,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.only(right: 100.0, left: 100.0),
+                  child: _buildUI(),
+                ),
+                const SizedBox(height: 32),
+
+                sectionTitle(
+                  title: 'CONNECT',
+                  subtitle: 'our team & alumni',
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => TeamPage()),
+                      ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 145,
+                  child: PageView.builder(
+                    controller: teamController,
+                    onPageChanged: (index) => setState(() => teamPage = index),
+                    itemCount: 3,
+                    itemBuilder: (context, index) {
+                      final focused = index == teamPage;
+                      return Transform.scale(
+                        scale: focused ? 1.0 : 0.85,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 1),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border:
+                                focused
+                                    ? Border.all(color: Colors.white, width: 2)
+                                    : null,
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/teams/team${index + 1}.jpg',
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 25),
-              sectionTitle(
-                title: 'BUILD',
-                subtitle: 'cool projects',
-                onTap:
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ProjectsPage()),
-                    ),
-              ),
-              const SizedBox(height: 15),
-              SizedBox(
-                height: 145,
-                child: PageView.builder(
-                  controller: projectsController,
-                  onPageChanged:
-                      (index) => setState(() => projectsPage = index),
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    final focused = index == projectsPage;
-                    return Transform.scale(
-                      scale: focused ? 1.0 : 0.85,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 50),
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            //borderRadius: BorderRadius.circular(16),
-                            //border:
-                            //    focused
-                            //        ? Border.all(color: Colors.white, width: 2)
-                            //        : null,
-                            image: AssetImage(
-                              'assets/projects/project${index + 1}.png',
+                const SizedBox(height: 25),
+                sectionTitle(
+                  title: 'BUILD',
+                  subtitle: 'cool projects',
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProjectsPage()),
+                      ),
+                ),
+                const SizedBox(height: 15),
+                SizedBox(
+                  height: 145,
+                  child: PageView.builder(
+                    controller: projectsController,
+                    onPageChanged:
+                        (index) => setState(() => projectsPage = index),
+                    itemCount: 3,
+                    itemBuilder: (context, index) {
+                      final focused = index == projectsPage;
+                      return Transform.scale(
+                        scale: focused ? 1.0 : 0.85,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 50),
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              //borderRadius: BorderRadius.circular(16),
+                              //border:
+                              //    focused
+                              //        ? Border.all(color: Colors.white, width: 2)
+                              //        : null,
+                              image: AssetImage(
+                                'assets/projects/project${index + 1}.png',
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 12),
-              sectionTitle(
-                title: 'LEARN & PARTICIPATE',
-                subtitle: 'fun events',
-                onTap:
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => EventsPage()),
-                    ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: 250,
-                child: FutureBuilder<List<EventDetailModel>>(
-                  future: _eventsFuture, //fetchEventsFromFirebase(), //ziya
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+                const SizedBox(height: 12),
+                sectionTitle(
+                  title: 'LEARN & PARTICIPATE',
+                  subtitle: 'fun events',
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => EventsPage()),
+                      ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 250,
+                  child: FutureBuilder<List<EventDetailModel>>(
+                    future: _eventsFuture, //fetchEventsFromFirebase(), //ziya
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                    if (snapshot.hasError) {
-                      return const Center(child: Text("Error loading events"));
-                    }
+                      if (snapshot.hasError) {
+                        return const Center(
+                          child: Text("Error loading events"),
+                        );
+                      }
 
-                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text("No events available"));
-                    }
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text("No events available"));
+                      }
 
-                    final events = snapshot.data!;
+                      final events = snapshot.data!;
 
-                    return PageView.builder(
-                      scrollDirection: Axis.horizontal,
-                      controller: eventsController,
-                      physics: const PageScrollPhysics(),
-                      onPageChanged:
-                          (index) => setState(() => eventsPage = index),
-                      itemCount: events.length,
-                      itemBuilder: (context, index) {
-                        final event = events[index];
-                        final focused = index == eventsPage;
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => EventDetailsPage(event: event),
-                              ),
-                            );
-                          },
-                          child: Transform.scale(
-                            scale: focused ? 1.0 : 0.85,
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                border:
-                                    focused
-                                        ? Border.all(
-                                          color: Colors.white,
-                                          width: 2,
-                                        )
-                                        : null,
-                                image: DecorationImage(
-                                  image: CachedNetworkImageProvider(
-                                    event.posterURL,
+                      return PageView.builder(
+                        scrollDirection: Axis.horizontal,
+                        controller: eventsController,
+                        physics: const PageScrollPhysics(),
+                        onPageChanged:
+                            (index) => setState(() => eventsPage = index),
+                        itemCount: events.length,
+                        itemBuilder: (context, index) {
+                          final event = events[index];
+                          final focused = index == eventsPage;
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => EventDetailsPage(event: event),
+                                ),
+                              );
+                            },
+                            child: Transform.scale(
+                              scale: focused ? 1.0 : 0.85,
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  border:
+                                      focused
+                                          ? Border.all(
+                                            color: Colors.white,
+                                            width: 2,
+                                          )
+                                          : null,
+                                  image: DecorationImage(
+                                    image: CachedNetworkImageProvider(
+                                      event.posterURL,
+                                    ),
+                                    fit: BoxFit.cover,
                                   ),
-                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(height: 40),
-            ],
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
         ),
       ),
@@ -286,33 +302,37 @@ class _HomePageState extends State<HomePage> {
             title,
             style: const TextStyle(
               fontFamily: 'VT323',
-              fontSize: 32,
+              fontSize: 30,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 1),
-          OutlinedButton(
+          const SizedBox(height: 0),
+          ElevatedButton(
             onPressed: onTap,
-            style: OutlinedButton.styleFrom(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.cyan.withOpacity(0.2),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               side: const BorderSide(
                 color: Colors.cyanAccent,
-                width: 2,
+                width: 0.8,
               ), // Your desired border color and width
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              minimumSize: Size(20, 20),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   subtitle,
                   style: const TextStyle(
                     fontFamily: 'PressStart2P',
-                    fontSize: 11,
+                    fontSize: 12,
                     color: Colors.white70,
                   ),
                 ),
